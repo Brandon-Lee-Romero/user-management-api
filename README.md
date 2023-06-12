@@ -1,66 +1,273 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+# USER MANAGEMENT API
 
-## About Laravel
+## Description
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+The User Management API is provides CRUD operations with bulk delete, search functionality, and pagination for managing users.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Post-Installation Instructions
+After installing the User Management API, you may need to perform the following steps:
+1. Configure Database Connection
+2. Run Database Migration and seed : `php artisan migrate --seed`   This will seed 10 random user
+   <br>  Default admins
+        <ul> 
+              <li><strong> username : admin-01 to admin-05 </strong> </li>
+              <li><strong> password : password  </strong>  </li>
+        </ul>
+ 3. Generate Application Key : `php artisan key:generate`
+ 4. Start the api server : `php artisan serve` 
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## API Documentation
+The User Management API exposes the following endpoints:
+| Method | Endpoint            | Description                      |
+| :----- | :------------------ | :------------------------------- |
+| GET    | `/users`            | Retrieves a list of all users.   |
+| POST   | `/users`            | Creates a new user.              |
+| GET    | `/users/{id}`       | Retrieves a specific user by ID. |
+| PUT    | `/users/{id}`       | Updates an existing user by ID.  |
+| DELETE | `/users/{id}`       | Deletes a user by ID.            |
+| DELETE | `/users/bulk-destroy`| Deletes selected users.            |
 
-## Learning Laravel
+***
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### USER CREATE
+POST url : `/users`
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+**Request Body:**
+   - `first_name'` : required string min:2 max:50,
+   - `last_name'` : required string min:2 max:50,
+   - `address'` : required string min:5 max:150,
+   - `postcode' ` : required string min:4 max:150,
+   - `contact_number'` : required numeric digits:11 unique:users,
+   - `email'` : required email unique:users,
+   - `username'` : required string min:4 max:20 unique:users,
+   - `password'` : required min:6 max:24 confirmed
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+**Request Body Example:**
+```josn
+{
+    "first_name": "John",
+    "last_name": "Doe",
+    "address": "1784 Yost Village Apt. 206\nVerdafurt, OK 18132",
+    "postcode": "2066",
+    "contact_number": "09112345678",
+    "email": "johndoe@mail.com",
+    "username": "johndoe",
+    "password": 123456,
+    "password_confirmation" : 123456
+}
+```
 
-## Laravel Sponsors
+**Response Example:**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```json
 
-### Premium Partners
+{
+    "status": "success",
+    "message": "Users created successfully",
+    "data": {
+        "first_name": "John",
+        "last_name": "Doe",
+        "address": "1784 Yost Village Apt. 206\nVerdafurt, OK 18132",
+        "postcode": "2066",
+        "contact_number": "09112345678",
+        "email": "johndoe@mail.com",
+        "username": "johndoe",
+        "updated_at": "2023-06-12T04:10:05.000000Z",
+        "created_at": "Jun-12-2023",
+        "id": 17
+    }
+}
+```
+***
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+### USER UPDATE
+PUT url : `/users/17` 
 
-## Contributing
+*you can update any of the input fields from the user model*
+ 
+**Request Body Example:**
+```josn
+{
+   "username": "updatedjohn"
+}
+```
+**Response Example:**
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```json
 
-## Code of Conduct
+{
+    "status": "success",
+    "message": "User updated successfully"
+}
+```
+***
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### USER DETAILS
+GET url : `/users/17` 
+ 
+**Response Example:**
 
-## Security Vulnerabilities
+```json
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+{
+    "status": "success",
+    "message": "User retrieved successfully",
+    "data": {
+        "id": 17,
+        "first_name": "John",
+        "last_name": "Doe",
+        "address": "1784 Yost Village Apt. 206\nVerdafurt, OK 18132",
+        "postcode": "2066",
+        "contact_number": "09112345678",
+        "email": "johndoe@mail.com",
+        "username": "updatedjohn",
+        "created_at": "Jun-12-2023",
+        "updated_at": "2023-06-12T04:17:47.000000Z"
+    }
+}
+```
 
-## License
+***
+### USER DELETE
+DELETE url : `/users/15` 
+ 
+**Response Example:**
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```json
+
+{
+    "status": "success",
+    "message": "User deleted successfully"
+}
+```
+***
+
+### USER BULK DELETE
+DELETE url : `/users/15` 
+
+*accepts array of id from existing users*
+
+ **Request Body Example:**
+```josn
+{
+  "id" : [6, 8, 3]
+}
+```
+**Response Example:**
+
+```json
+
+{
+    "status": "success",
+    "message": "Users deleted successfully "
+}
+```
+***
+
+### USER LIST
+**Parameters for listing users :**
+    
+- `page` (optional): The page number for pagination.
+- `limit` (optional): The number of users per page.
+- `sort` (optional) : The sort column from the users table.
+- `order` (optional) : The order of the users in ascendig or descending order
+- `search` (optional) : The key word to filter users.
+
+**Response Example:**
+
+```json
+[
+   "status": "success",
+    "message": "Users retrieved successfully",
+    "data": {
+        "current_page": 1,
+        "data": [
+           
+            {
+                "id": 7,
+                "first_name": "Isobel",
+                "last_name": "Douglas",
+                "address": "11447 Baumbach Plaza Suite 904\nNew Zoramouth, HI 11278-1972",
+                "postcode": "99115",
+                "contact_number": "09158656649",
+                "email": "rory68@example.org",
+                "username": "jerrod.waelchi",
+                "created_at": "Jun-12-2023",
+                "updated_at": "2023-06-12T02:53:13.000000Z"
+            },
+            {
+                "id": 6,
+                "first_name": "Laverna",
+                "last_name": "Waelchi",
+                "address": "1784 Yost Village Apt. 206\nVerdafurt, OK 18132",
+                "postcode": "53580",
+                "contact_number": "09409727338",
+                "email": "johnson.shaina@example.com",
+                "username": "vlakin",
+                "created_at": "Jun-12-2023",
+                "updated_at": "2023-06-12T02:53:13.000000Z"
+            }
+        ],
+        "first_page_url": "http://127.0.0.1:8000/api/users?page=1",
+        "from": 1,
+        "last_page": 1,
+        "last_page_url": "http://127.0.0.1:8000/api/users?page=1",
+        "links": [
+            {
+                "url": null,
+                "label": "&laquo; Previous",
+                "active": false
+            },
+            {
+                "url": "http://127.0.0.1:8000/api/users?page=1",
+                "label": "1",
+                "active": true
+            },
+            {
+                "url": null,
+                "label": "Next &raquo;",
+                "active": false
+            }
+        ],
+        "next_page_url": null,
+        "path": "http://127.0.0.1:8000/api/users",
+        "per_page": 50,
+        "prev_page_url": null,
+        "to": 10,
+        "total": 10
+    }
+] 
+```
+## TESTING
+**To run the test:**
+ - Configure Database Connection For Testing 
+    ``` TEST_DB_CONNECTION=mysql
+        TEST_DB_HOST=127.0.0.1
+        TEST_DB_PORT=3306
+        TEST_DB_DATABASE=user-management-test
+        TEST_DB_USERNAME=root
+        TEST_DB_PASSWORD=  
+      ```
+ - RUN `php artisan test`
+
+**provided below are the test cases: **
+
+```
+   PASS  Tests\Feature\AuthenticationTest
+  ✓ admin can login                                                                                                                                                        0.41s  
+  ✓ user with non admin type cannot login                                                                                                                                  0.07s  
+  ✓ admin can logout                                                                                                                                                       0.01s  
+
+   PASS  Tests\Feature\UserTest
+  ✓ admin can create user                                                                                                                                                  0.07s  
+  ✓ admin can get user                                                                                                                                                     0.01s  
+  ✓ admin can list users                                                                                                                                                   0.01s  
+  ✓ admin can search created users                                                                                                                                         0.01s  
+  ✓ admin can update user                                                                                                                                                  0.02s  
+  ✓ admin can delete user                                                                                                                                                  0.03s  
+  ✓ admin can delete multiple user 
+ ```
+
+
+
