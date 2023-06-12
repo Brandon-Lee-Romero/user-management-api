@@ -249,6 +249,8 @@ DELETE url : `/users/15`
         TEST_DB_USERNAME=root
         TEST_DB_PASSWORD=  
       ```
+ - run `php artisan migrate --database=mysql_test`
+ - ADD test/Unit directory if not found
  - RUN `php artisan test`
 
 **provided below are the test cases: **
