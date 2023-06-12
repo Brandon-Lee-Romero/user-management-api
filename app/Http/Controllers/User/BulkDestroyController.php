@@ -12,17 +12,20 @@ class BulkDestroyController extends Controller
      * Handle the incoming request.
      */
     public function __invoke(BulkDestroyRequest $request)
-    {       
+    {
         $validated = $request->safe()->all();
-        
+
         $bulkDestroy = User::whereIn('id', $validated['id'])->delete();
 
-        if(!$bulkDestroy)  return response()->json(['status' => 'error', 'message' => 'Something went wrong'], 422);
+        if (!$bulkDestroy)  return response()->json([
+            'status' => 'error',
+            'message' =>
+            'Something went wrong'
+        ], 422);
 
         return response()->json([
-            'status' => 'success', 
+            'status' => 'success',
             'message' => 'Users deleted successfully '
         ]);
-
     }
 }

@@ -66,7 +66,10 @@ class UserController extends Controller
 
         $data = User::create($validated);
 
-        if (!$data) return response()->json(['status' => 'error', 'message' => 'Something went wrong'], 422);
+        if (!$data) return response()->json([
+            'status' => 'error',
+            'message' => 'Something went wrong'
+        ], 422);
 
         return response()->json([
             'status' => 'success',
@@ -82,7 +85,10 @@ class UserController extends Controller
     {
         $data = User::find($id);
 
-        if (!$data) return response()->json(['status' => 'error', 'message' => 'No user found'], 404);
+        if (!$data) return response()->json([
+            'status' => 'error',
+            'message' => 'No user found'
+        ], 404);
 
         unset($data->type);
 
@@ -103,7 +109,10 @@ class UserController extends Controller
 
         $data = User::find($id);
 
-        if (!$data) return response()->json(['status' => 'error', 'message' => 'Failed to update user: no user found'], 404);
+        if (!$data) return response()->json([
+            'status' => 'error',
+            'message' => 'Failed to update user: no user found'
+        ], 404);
 
         $data->update($validated);
 
@@ -120,7 +129,11 @@ class UserController extends Controller
     {
         $data = User::find($id);
 
-        if (!$data) return response()->json(['status' => 'error', 'message' => 'Failed to delete user: no user found'], 404);
+        if (!$data) return response()->json([
+            'status' => 'error',
+            'message' =>
+            'Failed to delete user: no user found'
+        ], 404);
 
         $data->delete();
 
