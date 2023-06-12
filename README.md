@@ -3,7 +3,7 @@
 
 ## Description
 
-The User Management API is provides CRUD operations with bulk delete, search functionality, and pagination for managing users.
+The User Management API provides CRUD operations with bulk delete, search functionality, and pagination for managing users.
 
 ## Post-Installation Instructions
 After installing the User Management API, you may need to perform the following steps:
