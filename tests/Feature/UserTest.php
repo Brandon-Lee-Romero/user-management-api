@@ -115,7 +115,7 @@ class UserTest extends TestCase
     }
 
     public function test_admin_can_delete_multiple_user(): void
-    {   
+    {
         $admin = User::factory()->create(['type' => 1]);
 
         $token = $admin->createToken('test-token', ['admin'])->plainTextToken;
@@ -123,9 +123,20 @@ class UserTest extends TestCase
         $user1 = User::factory()->create(['first_name' => 'John', 'last_name' => 'Doe']);
         $user2 = User::factory()->create(['first_name' => 'Jane', 'last_name' => 'Doe']);
 
-        $response = $this->actingAs($admin)->deleteJson('/api/users/bulk-destroy', [ "id" => [$user1->id, $user2->id]] , ['Authorization' => 'Bearer ' . $token]);
+        $response = $this->actingAs($admin)->deleteJson('/api/users/bulk-destroy', ["id" => [$user1->id, $user2->id]], ['Authorization' => 'Bearer ' . $token]);
 
-        
+
         $response->assertStatus(200)->assertJsonStructure(['status', 'message']);
+    }
+
+    public function test_admin_cant_see_deleted_users()
+    {
+        $admin = User::factory()->create(['type' => 1]);
+
+        $token = $admin->createToken('test-token', ['admin'])->plainTextToken;
+
+        $response = $this->actingAs($admin)->getJson('/api/users',  ['Authorization' => 'Bearer ' . $token]);
+
+        $response->assertStatus(200)->assertDontSee(['John', 'Jane']);
     }
 }
