@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Unit;
 
 use Tests\TestCase;
 use App\Models\User;
@@ -34,6 +34,36 @@ class AuthenticationTest extends TestCase
             ->assertJsonStructure(['access_token', 'token_type', 'status']);
     }
 
+    public function test_admin_cannot_login_with_wrong_password()
+    {
+        $admin = User::factory()->create(['type' => 1]);
+
+        $credentials = [
+            'username' => $admin->username,
+            'password' => 'password1',
+        ];
+
+        $response = $this->postJson('/api/auth/login', $credentials);
+
+        $response->assertStatus(401)
+            ->assertJsonStructure(['message', 'status']);
+    }
+
+    public function test_admin_cannot_login_with_wrong_username()
+    {
+        $admin = User::factory()->create(['type' => 1]);
+
+        $credentials = [
+            'username' => $admin->username .'1',
+            'password' => 'password',
+        ];
+
+        $response = $this->postJson('/api/auth/login', $credentials);
+
+        $response->assertStatus(401)
+            ->assertJsonStructure(['message', 'status']);
+    }
+
     public function test_user_with_non_admin_type_cannot_login()
     {
         $user = User::factory()->create(['type' => 0]);
@@ -61,4 +91,5 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200)
             ->assertJson(['status' => 'success']);
     }
+
 }

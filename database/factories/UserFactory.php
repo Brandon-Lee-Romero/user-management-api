@@ -20,7 +20,7 @@ class UserFactory extends Factory
         return [
             'first_name' => fake()->firstName(),
             'last_name' => fake()->lastName(),
-            'address' => fake()->address(),
+            'address' => fake()->text(15),
             'postcode' => fake()->postcode(),
             'contact_number' => substr_replace(str_replace('+', '', fake()->unique()->e164PhoneNumber()), '09', 0, 2),
             'email' => fake()->unique()->safeEmail(),

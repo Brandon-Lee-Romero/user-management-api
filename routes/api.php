@@ -4,7 +4,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\{
     LoginController,
-    LogoutController
+    LogoutController,
+    ProfileController
 };
 use App\Http\Controllers\User\{
     BulkDestroyController,
@@ -22,13 +23,15 @@ use App\Http\Controllers\User\{
 |
 */
 
+Route::post('/auth/login', LoginController::class);
 
-Route::prefix('auth')->group(function () {
-    Route::post('/login', LoginController::class);
-    Route::post('/logout', LogoutController::class)->middleware('auth:sanctum');
+
+Route::middleware(['auth:sanctum'])->prefix('auth')->group(function () {
+    Route::post('/logout', LogoutController::class);
+    Route::get('/profile', ProfileController::class);
 });
 
-// Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
+Route::middleware(['auth:sanctum', 'ability:admin'])->group(function () {
     Route::prefix('users')->group(function () {
         Route::delete('/bulk-destroy', BulkDestroyController::class);
         Route::get('/', [UserController::class, 'index']);
@@ -37,4 +40,4 @@ Route::prefix('auth')->group(function () {
         Route::put('/{id}', [UserController::class, 'update']);
         Route::delete('/{id}', [UserController::class, 'destroy']);
     });
-// });
+});
